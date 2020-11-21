@@ -1,0 +1,42 @@
+[
+  {
+    "number": 1,
+    "state": "odd"
+  },
+  {
+    "number": 2,
+    "state": "even"
+  },
+  {
+    "number": 3,
+    "state": "odd"
+  },
+  {
+    "number": 4,
+    "state": "even"
+  },
+  {
+    "number": 5,
+    "state": "odd"
+  },
+  {
+    "number": 6,
+    "state": "even"
+  },
+  {
+    "number": 7,
+    "state": "odd"
+  },
+  {
+    "number": 8,
+    "state": "even"
+  },
+  {
+    "number": 9,
+    "state": "odd"
+  },
+  {
+    "number": 10,
+    "state": "even"
+  }
+]
