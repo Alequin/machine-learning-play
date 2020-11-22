@@ -10,10 +10,9 @@ const run = async () => {
   xs.print();
   ys.print();
 
-  const iterations = 100;
-  const testData = [1, 25, 49, 51, 75, 99];
-
-  for (let j = 0; j < iterations; j++) {
+  const iterations = 200;
+  const testData = [1, 2, 3, 4, 60, 61, 62, 63];
+  for (let j = 0; j <= iterations; j++) {
     const history = await startTraining(model, xs, ys);
     const preds = model.predict(tf.tensor(testData));
     const output = Array.from(preds.round().dataSync());
@@ -29,12 +28,10 @@ const run = async () => {
 };
 
 const makeTestData = (totalInputs) => {
-  const inputs = shuffle(
-    new Array(totalInputs).fill(0).map((num, index) => {
-      const number = num + index;
-      return { number, expectedOutput: number <= 50 ? 0 : 1 };
-    }),
-  );
+  const inputs = new Array(totalInputs).fill(0).map((num, index) => {
+    const number = num + index;
+    return { number, expectedOutput: number * 2 };
+  });
 
   const xs = tf.tensor2d(
     inputs.map(({ number }) => number),
@@ -47,46 +44,19 @@ const makeTestData = (totalInputs) => {
   return { xs, ys };
 };
 
-const shuffle = (arrayToShuffle) => {
-  for (
-    let startIndex = arrayToShuffle.length - 1;
-    startIndex > 0;
-    startIndex--
-  ) {
-    const startValue = arrayToShuffle[startIndex];
-    const indexToSwap = Math.floor(Math.random() * (startIndex + 1));
-    const valueToSwap = arrayToShuffle[indexToSwap];
-
-    arrayToShuffle[indexToSwap] = startValue;
-    arrayToShuffle[startIndex] = valueToSwap;
-  }
-  return arrayToShuffle;
-};
-
 const newModel = () => {
   // A sequential model is any model where the outputs of one layer are the inputs to the next layer
   const model = tf.sequential();
-  model.add(
-    tf.layers.dense({
-      units: 5,
-      inputShape: [1],
-      activation: "sigmoid",
-    }),
-  );
-  model.add(tf.layers.dense({ units: 3, activation: "sigmoid" }));
-  model.add(tf.layers.dense({ units: 1, activation: "sigmoid" }));
+  model.add(tf.layers.dense({ units: 1, batchInputShape: [null, 1] }));
 
   model.compile({
     loss: "meanSquaredError",
-    optimizer: optimizer,
+    optimizer: "adam",
     metrics: ["accuracy"],
   });
 
   return model;
 };
-
-const learningRate = 0.01;
-const optimizer = tf.train.adam(learningRate);
 
 const startTraining = async (model, xs, ys) => {
   return await model.fit(xs, ys, {
